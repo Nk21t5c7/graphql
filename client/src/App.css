@@ -1,5 +1,16 @@
+html{
+  height: 100%;
+
+}
+
 .App {
   text-align: center;
+  padding: 1rem;
+  width: 80%;
+  margin: 0 auto;
+  border-left: 2px solid black;
+  border-right: 2px solid black;
+  min-height: 100vh;
 }
 
 .App-logo {
