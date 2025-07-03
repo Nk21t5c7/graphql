@@ -1,18 +1,20 @@
 import { useMutation, useQuery } from '@apollo/client'
 import { Button, Form, Input, Select } from 'antd'
 import { useEffect, useState } from 'react'
-import { UPDATE_CAR, GET_PEOPLE } from '../../graphql/queries'
+import { UPDATE_CAR, GET_PEOPLE, UPDATE_PERSON, GET_PEOPLE_AND_CAR } from '../../graphql/queries'
 
-const UpdatePerson = props => {
+const UpdateCar = props => {
     const { id, year, make, model, price, personId } = props
     const [form] = Form.useForm()
     const [, forceUpdate] = useState()
     const [updateCar] = useMutation(UPDATE_CAR)
+    const [updatePerson] = useMutation(UPDATE_PERSON)
 
     useEffect(() => {
         forceUpdate({})
     }, [])
 
+    // const { loading, error, data } = useQuery(GET_PEOPLE_AND_CAR)
     const { loading, error, data } = useQuery(GET_PEOPLE)
     if (loading) return 'Loading...'
     if (error) return `Error! ${error.message}`;
@@ -24,8 +26,14 @@ const UpdatePerson = props => {
 
         updateCar({
             variables: {
-                id, year, make, model, price, personId
-            }
+                id,
+                year: Number(year),
+                make,
+                model,
+                price: Number(price),
+                personId
+            },
+            refetchQueries: [{ query: GET_PEOPLE_AND_CAR }]
         })
         props.onButtonClick()
     }
@@ -50,7 +58,7 @@ const UpdatePerson = props => {
                 name='make'
                 rules={[{ required: true, message: 'Please enter make' }]}
             >
-                <Input placeholder='i.e. Lexu' />
+                <Input placeholder='i.e. Honda' />
             </Form.Item>
             <Form.Item
                 name='model'
@@ -69,8 +77,8 @@ const UpdatePerson = props => {
                 rules={[{ required: true, message: 'Please select a person' }]}
             >
                 <Select
-                 placeholder='Select a person' 
-                 >
+                    placeholder='Select a person'
+                >
                     {data.people.map((p) => (
                         <Select.Option key={p.id} value={p.id}>
                             {p.firstName} {p.lastName}
@@ -86,8 +94,8 @@ const UpdatePerson = props => {
                         disabled={
                             (
                                 !form.isFieldTouched('year') && !form.isFieldTouched('model') && !form.isFieldTouched('make') && !form.isFieldTouched('personId') && !form.isFieldTouched('price')) ||
-                                form.getFieldsError().filter(({ errors }) => errors.length).length
-                            }                         
+                            form.getFieldsError().filter(({ errors }) => errors.length).length
+                        }
                     >
                         Update Car
                     </Button>
@@ -98,4 +106,4 @@ const UpdatePerson = props => {
     )
 }
 
-export default UpdatePerson;
+export default UpdateCar;

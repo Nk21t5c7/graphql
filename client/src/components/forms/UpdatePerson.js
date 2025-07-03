@@ -19,8 +19,10 @@ const UpdatePerson = props => {
 
     updatePerson({
       variables: {
-        id, firstName,
-        lastName, car
+        id, 
+        firstName,
+        lastName, 
+        car
       }
     })
     props.onButtonClick()

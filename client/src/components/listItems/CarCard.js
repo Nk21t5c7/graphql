@@ -5,7 +5,7 @@ import UpdateCar from '../forms/UpdateCar'
 import RemoveCar from '../buttons/RemoveCar'
 
 const CarCard = props => {
-  const { id, year, make, model, price } = props
+  const { id, year, make, model, price, personId } = props
   const styles = getStyles();
   const [editMode, setEditMode] = useState(false)
 
@@ -16,7 +16,7 @@ const CarCard = props => {
   return (
     <div>
       {editMode ? (
-        <UpdateCar id={id} year={year} make={make} model={model} price={price} onButtonClick={handleButtonClick} />
+        <UpdateCar id={id} year={year} make={make} model={model} price={price} personId={personId} onButtonClick={handleButtonClick} />
       ) : (
         <Card
           style={styles.card}
@@ -25,7 +25,7 @@ const CarCard = props => {
             <RemoveCar id={id} />
           ]}
         >
-          {`${year} ${make} ${model} -> $${price}`}
+          {`${year} ${make} ${model} -> ${price.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 })}`}
         </Card>
       )}
     </div>

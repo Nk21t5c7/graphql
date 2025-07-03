@@ -8,7 +8,6 @@ import { Link } from 'react-router-dom'
 
 const PersonCard = props => {
   const { id, firstName, lastName, car } = props
-  const styles = getStyles();
   const [editMode, setEditMode] = useState(false)
 
   const handleButtonClick = () => {
@@ -21,7 +20,6 @@ const PersonCard = props => {
         <UpdatePerson id={id} firstName={firstName} lastName={lastName} car={car} onButtonClick={handleButtonClick} />
       ) : (
         <Card
-          style={styles.card}
           actions={[
             <EditOutlined key='edit' onClick={handleButtonClick} />,
             <RemovePerson id={id} />
@@ -37,9 +35,3 @@ const PersonCard = props => {
 }
 
 export default PersonCard;
-
-const getStyles = () => ({
-  card: {
-    // width: '500px'
-  }
-})
