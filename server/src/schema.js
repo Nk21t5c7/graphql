@@ -94,13 +94,14 @@ const cars = [
     }
 ]
 
+
 const typeDefs = `
     type Car {
         id: String!
-        year:String
+        year:Int
         make:String
         model:String
-        price:String
+        price:Float
         personId:String!
     }
 
@@ -120,8 +121,8 @@ const typeDefs = `
     }
 
     type Mutation {
-        addCar(id: String!, year: String!, make: String!, model: String!, price: String!, personId:String!): Car
-        updateCar(id: String!, year: String!, make: String!, model: String!, price: String!, personId:String!): Car
+        addCar(id: String!, year: Int!, make: String!, model: String!, price: Float!, personId:String!): Car
+        updateCar(id: String!, year: Int!, make: String!, model: String!, price: Float!, personId:String!): Car
         removeCar(id: String!): Car
         addPerson(id: String!, firstName: String!, lastName: String!): Person
         updatePerson(id: String!, firstName: String!, lastName: String!): Person
@@ -187,19 +188,19 @@ const resolvers = {
                 lastName: args.lastName
             }
             people.push(newPerson)
-            return people;
+            return newPerson;
         },
         updatePerson: (_root, args) => {
             const person = find(people, { id: args.id })
             if (!person) {
-              throw new Error(`Person with id ${args.id} not found`)
+                throw new Error(`Person with id ${args.id} not found`)
             }
-      
+
             person.firstName = args.firstName
             person.lastName = args.lastName
-      
+
             return person
-          },
+        },
         removePerson: (_root, args) => {
             const removedPerson = find(people, { id: args.id })
             if (!removedPerson) {
@@ -212,7 +213,7 @@ const resolvers = {
             return removedPerson
         },
     },
-    Person:{
+    Person: {
         car: (parent) => cars.filter(car => car.personId === parent.id)
     }
 }
