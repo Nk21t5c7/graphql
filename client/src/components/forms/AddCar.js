@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button, Form, Input, Select } from 'antd'
 import { v4 as uuidv4 } from "uuid";
-import { ADD_CAR, GET_CARS, GET_PEOPLE } from '../../graphql/queries';
+import { ADD_CAR, GET_CARS, GET_PEOPLE, GET_PEOPLE_AND_CAR } from '../../graphql/queries';
 import { useMutation, useQuery } from '@apollo/client';
 
 
@@ -21,30 +21,54 @@ const AddCar = () => {
 
     const onFinish = values => {
         const { make, year, model, price, personId } = values
+        const newid = uuidv4();
 
         addCar({
             variables: {
-                id,
+                // id,
+                id: newid,
                 make,
                 model,
-                year,
-                price,
-                personId
+                year: Number(year),
+                price: Number(price),
+                personId,
+                // refetchQueries: [
+                //     { query: GET_PEOPLE_AND_CAR },
+                //     { query: GET_CARS }
+                // ]
+
             },
 
             update: (cache, { data: { addCar } }) => {
-                const data = cache.readQuery({ query: GET_CARS })
-
+                const data = cache.readQuery({ query: GET_CARS });
+                console.log("add car data", data)
+                const currentCars = data?.cars || [];
                 cache.writeQuery({
                     query: GET_CARS,
                     data: {
-                        ...data,
-                        cars: [...data.cars, addCar]
+                        cars: [...currentCars, addCar]
                     }
-                })
+                });
+                const peopleAndCardata = cache.readQuery({ query: GET_PEOPLE_AND_CAR });
+                const updatedPeople = peopleAndCardata.people.map(person => {
+                    if (person.id === addCar.personId) {
+                        return {
+                            ...person,
+                            car: [...person.car, addCar]
+                        };
+                    }
+                    return person;
+                });
+                cache.writeQuery({
+                    query: GET_PEOPLE_AND_CAR,
+                    data: {
+                        ...peopleAndCardata,
+                        people: updatedPeople
+                    }
+                });
             }
         })
-
+        form.resetFields();
     }
 
     return (
@@ -68,7 +92,7 @@ const AddCar = () => {
                 label="Make:"
                 rules={[{ required: true, message: 'Please enter make' }]}
             >
-                <Input prefix="$" />
+                <Input />
             </Form.Item>
             <Form.Item
                 name='model'
@@ -82,7 +106,7 @@ const AddCar = () => {
                 label="Price"
                 rules={[{ required: true, message: 'Please enter price' }]}
             >
-                <Input />
+                <Input prefix="$" />
             </Form.Item>
             <Form.Item
                 name='personId'

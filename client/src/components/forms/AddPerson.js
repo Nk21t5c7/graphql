@@ -39,6 +39,7 @@ const AddPerson = () => {
                 })
             }
         })
+        form.resetFields();
 
     }
     return (
@@ -52,12 +53,14 @@ const AddPerson = () => {
         >
             <Form.Item
                 name='firstName'
+                label="First Name"
                 rules={[{ required: true, message: 'Please enter a first name' }]}
             >
                 <Input placeholder='i.e. John' />
             </Form.Item>
             <Form.Item
                 name='lastName'
+                label="Last Name"
                 rules={[{ required: true, message: 'Please enter a last name' }]}
             >
                 <Input placeholder='i.e. Smith' />
@@ -81,3 +84,5 @@ const AddPerson = () => {
 }
 
 export default AddPerson;
+
+
