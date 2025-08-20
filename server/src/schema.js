@@ -130,7 +130,6 @@ const typeDefs = `
     }
 `
 
-//resolverのキー: () => resolverの外側で定義された配列や関数の戻り値
 const resolvers = {
     Query: {
         cars: () => cars,
